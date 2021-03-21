@@ -5,6 +5,7 @@
  */
 
 var app = require('../app');
+var wss = require('../wss');
 var debug = require('debug')('daw-prj04:server');
 var http = require('http');
 
