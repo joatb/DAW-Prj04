@@ -1,0 +1,68 @@
+body * {
+	font-size:1rem;
+}
+
+h2 {
+	font-size:1.4rem;
+	text-align:center;
+}
+
+div {
+	margin-bottom:1rem;
+}
+
+label {
+	width:14rem;
+	display:inline-block;
+	text-align:right;
+}
+
+input {
+	width:4rem;
+	margin:.2rem;
+}
+
+button {
+	width: 9.37rem;
+}
+
+.left {
+	text-align:left;
+}
+
+tbody tr{
+	background: green;
+	color: white;
+}
+
+.center {
+	text-align:center;
+}
+
+.right {
+	text-align:right;
+}
+
+.bold {
+	font-weight:bold;
+}
+
+
+#joc {
+	border: 1px solid red;
+}
+
+.nau{
+	fill: green;
+	position: absolute;
+}
+
+.self {
+	fill: red;
+	position: absolute;
+	z-index: 9999;
+}
+
+.star{
+	position: absolute;
+}
