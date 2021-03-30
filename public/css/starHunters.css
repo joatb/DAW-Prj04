@@ -49,7 +49,7 @@ tbody tr{
 
 
 #joc {
-	border: 1px solid black;
+	border: 1px solid red;
 }
 
 .nau{
@@ -65,8 +65,4 @@ tbody tr{
 
 .star{
 	position: absolute;
-}
-
-.start-joc{
-	border: 1px solid palegreen;
 }

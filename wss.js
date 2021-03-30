@@ -8,11 +8,11 @@ const StarHunter = require('./model/StarHunter.js');
 const Sala = require('./model/Sala.js');
 const { ProxyAuthenticationRequired } = require('http-errors');
 
-const WIDTH = process.env.WIDTH;
-const HEIGHT = process.env.HEIGHT;
 const ESCALA = process.env.ESCALA;
-const MIDAJ = WIDTH / ESCALA;
-const MIDASTAR = WIDTH / ESCALA / 2;
+const MIDAJ = (4 * ESCALA);
+const MIDASTAR = (2 * ESCALA);
+const WIDTH = (40 * MIDAJ) / 2;
+const HEIGHT = (30 * MIDAJ) / 2;
 const TEMPS = process.env.TEMPS;
 
 var config = {
@@ -58,7 +58,7 @@ function processar(ws, missatge) {
 		case "crearJugador":
 			crearJugador(ws, missatge);
 			break;
-		case "configurar el joc":
+		case "configurar":
 			configurar(ws, missatge);
 			break;
 		case "startStop":
@@ -72,13 +72,6 @@ function processar(ws, missatge) {
 			ws.close();
 			break;
 	}
-	/*
-	let response = {
-		event: 'actualitzarDades',
-		sala: wss.sala
-	}
-	wss.broadcast(JSON.stringify(response));
-	*/
 }
 
 // Esdeveniment: un client  ha tidJugadorncat la connexió
@@ -87,10 +80,6 @@ function processar(ws, missatge) {
 function tancar(ws) {
 	if (ws.rol == 'admin') {
 		admins.shift(); // Elimina la connexió de l'administrador de l'array admins[]
-	}
-	else if (ws.rol == 'jugador') {
-		//var indexJugador = wss.sala.starHunters.findIndex((jugador) => jugador.id == ws.id); // index del jugador en l'array del seu equip
-		//wss.sala.starHunters.splice(indexJugador, 1); // elimina el jugador de l'array equip0[]
 	}
 	ws.close(); // Tanca el websocket
 }
@@ -103,14 +92,7 @@ function stop(ws, m) {
 		ws.send('El joc ja està en aturat.');
 	}
 	else {
-		console.log('stop');
 		wss.sala.endgame = true;
-		/*
-		var msg = {
-			accio: 'aturar'
-		};
-		ws.send(JSON.stringify(msg));
-		*/
 	}
 }
 
@@ -122,17 +104,8 @@ function start(ws, m) {
 		ws.send('El joc ja està en marxa.');
 	}
 	else {
-		console.log('start');
 		wss.sala.endgame = false;
 		wss.sala.reiniciarSala();
-		console.log(wss.sala);
-		//wss.sala.generarEstrelles();
-		/*
-		var msg = {
-			accio: 'aturar'
-		};
-		ws.send(JSON.stringify(msg));
-		*/
 	}
 }
 
@@ -166,6 +139,7 @@ function crearJugador(ws, missatge){
         id: ws.id,
         xPos: xPos,
         yPos: yPos,
+		rotar: 0,
         stars: [],
     };
     wss.sala.starHunters.push(new StarHunter(starHunter));
@@ -174,16 +148,11 @@ function crearJugador(ws, missatge){
         event: 'connectat',
         starHunter
     }
-	//console.log(wss.sala);
-    //wss.clients.push(ws);
-    //console.log(wss.clients);
+
     ws.send(JSON.stringify(response));
-    //wss.broadcast(JSON.stringify(sala));
-    //wss.clients.push(ws);
 }
 
 function actualitzarDireccio(ws, missatge){
-    //wss.sala.starHunters[ws.id].tecla = missatge.tecla;
 	let indexNau = wss.sala.getStarHunterIndexById(ws.id);
 	wss.sala.starHunters[indexNau].tecla = missatge.tecla;
 }
@@ -208,9 +177,6 @@ function actualitzarPosicio(nau, coordenada, suma){
 	  }
 	}
 	nau.ultimaTeclaPulsada = nau.tecla;
-	//console.log(this.obj);
-
-	//this.actualitzarPuntuacio();
   }
 
 
@@ -221,25 +187,12 @@ function comprovarFinalPartida(){
 }
 
 function puntuar(jugador){
-	//let index = 0;
 	for (star of wss.sala.stars) {
-		if (Math.abs(jugador.xPos - star.xPos) <= wss.sala.config.midastar && Math.abs(jugador.yPos - star.yPos) <= wss.sala.config.midastar) { // si el jugador està tocant o sobre la pedra
-			/*
-			if (pedra.id == undefined) { // si la pedra no la té cap jugador
-				pedra.id = jugador.id;
-			}
-			else if (pedra.id == jugador.id) { // si la pedra ja té un id
-				puntuar(jugador, pedra); // intenta puntuar
-				delete pedra.id; // eliminar id
-			}
-			*/
+		if (Math.abs(jugador.xPos - star.xPos) <= wss.sala.config.midastar && Math.abs(jugador.yPos - star.yPos) <= wss.sala.config.midastar) {
 			const index = wss.sala.stars.indexOf(star);
 			if (index > -1) {
 				jugador.stars.push(wss.sala.stars.splice(index, 1)[0]);
 			}
-			//let newStar = .slice(index, 1);
-			//jugador.stars.push(newStar[0]);
-			//console.log(newStar);
 		}
 	}
 	return jugador;
@@ -273,13 +226,11 @@ function mou() {
 		comprovarFinalPartida();
 	}
 	wss.sala.starHunters = copiaJugadors;
-    //console.log(wss.sala);
     let response = {
         event: 'actualitzarDades',
         sala: wss.sala
     }
 	wss.broadcast(JSON.stringify(response));
 }
-//console.log(wss.sala);
 
 module.exports = wss;

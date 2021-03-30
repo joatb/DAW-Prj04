@@ -7,10 +7,10 @@ class Sala{
         this.stars = [];
     }
     getStarHunterIndexById(id){
-        //return this.starHunters.find(jugador => jugador.id == id);
         return this.starHunters.findIndex((starhunter) => starhunter.id === id);
     }
     reiniciarSala(){
+        this.stars = [];
         this.starHunters.forEach(starhunter => {
             starhunter.stars = [];
         });
