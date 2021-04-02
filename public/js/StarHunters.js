@@ -32,7 +32,13 @@ function dibuixarNau(id) {
 }
 
 function end() {
-  endGame = true;
+  $('#joc').css('border', '1px solid red');
+  $('#guanyador').text(`Guanyador -> ${sala.guanyador.id}`);
+}
+
+function start(){
+  $('#joc').css('border', '1px solid palegreen');
+  $('#guanyador').text('');
 }
 
 class Star {
@@ -143,7 +149,7 @@ const actualitzarDades = (dades) => {
 }
 
 function isGameEnded(){
-  (endGame) ? $('#joc').css('border', '1px solid red') : $('#joc').css('border', '1px solid palegreen');
+  (endGame) ? end() : start();
 } 
 
 function configurar(config){

@@ -6,7 +6,6 @@ const wss = new WebSocket.Server({ port: 8180 });
 
 const StarHunter = require('./model/StarHunter.js');
 const Sala = require('./model/Sala.js');
-const { ProxyAuthenticationRequired } = require('http-errors');
 
 const ESCALA = process.env.ESCALA;
 const MIDAJ = (4 * ESCALA);
@@ -181,8 +180,13 @@ function actualitzarPosicio(nau, coordenada, suma){
 
 
 function comprovarFinalPartida(){
-	if(wss.sala.estrellesRestants() === 0){
+	if(wss.sala.starHunters[0].stars.length == wss.sala.config.numStars){
+		wss.sala.saveGuanyador();
 		wss.sala.endgame = true;
+	}
+	else if(wss.sala.estrellesRestants() === 0){
+		// Si no s'ha arribat a la quantitat d'estrelles per guanyar -> generar més estrelles
+		wss.sala.generarEstrelles();
 	}
 }
 
@@ -223,9 +227,14 @@ function mou() {
 			}
 			jugador = puntuar(jugador);
         }
+		// Ordenar jugadors per puntuació
+		copiaJugadors.sort((a, b)=>{
+			return b.stars.length - a.stars.length; 
+		});
 		comprovarFinalPartida();
 	}
 	wss.sala.starHunters = copiaJugadors;
+	console.log(wss.sala);
     let response = {
         event: 'actualitzarDades',
         sala: wss.sala

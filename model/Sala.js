@@ -34,5 +34,9 @@ class Sala{
     estrellesRestants(){
         return this.stars.length;
     }
+
+    saveGuanyador(){
+        this.guanyador = this.starHunters[0];
+    }
 }
 module.exports = Sala;
