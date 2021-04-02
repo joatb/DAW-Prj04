@@ -103,8 +103,10 @@ function start(ws, m) {
 		ws.send('El joc ja està en marxa.');
 	}
 	else {
-		wss.sala.endgame = false;
-		wss.sala.reiniciarSala();
+		if(wss.sala.starHunters.length > 0){
+			wss.sala.endgame = false;
+			wss.sala.reiniciarSala();
+		}
 	}
 }
 
