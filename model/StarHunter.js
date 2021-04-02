@@ -10,9 +10,6 @@ class StarHunter {
     this.stars = starhunter.stars;
   }
 
-  actualitzarPuntuacio() {
-    $("#estrelles").attr("value", this.stars.length);
-  }
 }
 
 module.exports = StarHunter;
